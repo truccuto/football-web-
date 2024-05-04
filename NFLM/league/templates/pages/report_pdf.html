@@ -1,0 +1,118 @@
+{% extends "pages/league_base.html" %}
+{% load static %}
+{% block title %}Report{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="display-4 font-select"> Standings</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Matches</th>
+                <th>Wins</th>
+                <th>Draws</th>
+                <th>Loses</th>
+                <th>Goals</th>
+                <th>Goals Conceded</th>
+                <th>Goal Difference</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team_stat in ranked_teams %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ team_stat.team.team_name }}</td>
+                <td>{{ team_stat.wins|add:team_stat.draws|add:team_stat.loses }}</td>
+                <td>{{ team_stat.wins }}</td>
+                <td>{{ team_stat.draws }}</td>
+                <td>{{ team_stat.loses }}</td>
+                <td>{{ team_stat.goals }}</td>
+                <td>{{ team_stat.goalsconceded }}</td>
+                <td>{{ team_stat.goaldifference }}</td>
+                <td>{{ team_stat.pts }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3 class="display-4 font-select"> Player Rankings</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Position</th>
+                <th>Goals</th>
+                <th>Assists</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player_stat in ranked_players %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ player_stat.player.name }}</td>
+                <td>{{ player_stat.player.team }}</td>
+                <td>{{ player_stat.player.position }}</td>
+                <td>{{ player_stat.numberofgoals }}</td>
+                <td>{{ player_stat.numberofassists }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3 class="display-4 font-select"> Matches</h3>
+    {% for fixture in fixture_list %}
+    <table class="table">
+            <thead>
+                <tr>
+                    <th>Team 1</th>
+                    <th>Result</th>
+                    <th>Team 2</th>
+                    <th>Round</th>
+                    <th>Stadium</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{fixture.team1}}</td>
+                    <td>{{fixture.result.team1pts}}-{{fixture.result.team2pts}}</td>
+                    <td>{{fixture.team2}}</td>
+                    <td>{{fixture.round_name}}</td>
+                    <td>{{fixture.stadium}}</td>
+                    <td>{{fixture.time}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <th>Goal Events</th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Scorer</th>
+                    <th>Assist</th>
+                    <th>Team</th>
+                    <th>Goal Type</th>
+                    <th>Time</th>
+                    <th></th>
+                </tr>
+                {% for goal_event in fixture.result.goal_events.all %}
+                <tr>
+                    <td>{{goal_event}}</td>
+                    <!-- <td>{{goal_event.goal_event.player.name}}</td>
+                    <td>{{goal_event.assist_player.name}}</td>
+                    <td>{{goal_event.goal_type}}</td>
+                    <td>{{goal_event.goal_time}}</td>
+                    <td></td>
+                    <td></td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+    {% endfor %}
+</div>
+{% endblock %}

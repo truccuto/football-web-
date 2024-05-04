@@ -1,0 +1,98 @@
+{% extends "pages/teams_base.html" %}
+{% load static %}
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {% if user.user_profile.user_type == 'organizer' %}
+        <button>
+        <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+        </button>
+        {% endif %}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">         Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1</b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+    <div class="container marketing">
+</br>
+    <div class="input-group">
+        <form method="GET" action="{% url 'search_team' %}" class="d-flex">
+        <div class="form-outline">
+            {{ form.team_name }}
+        </div>
+        <button type="submit" class="btn btn-outline-primary">SEARCH</button>
+        </form>
+    </div>
+</br></br>
+    <h3 class="display-4 font-select"> All Clubs</h3>
+    {% if not team_list|length|divisibleby:2 %}
+    <div class="alert alert-warning" role="alert">
+
+    </div>
+    {% endif %}
+</br>
+    {% for team in team_list %}
+    <div class="card">
+        <div class="card-header">
+            <span><img src="{{team.team_image.url}}" style="height:30px; width:30px; "></span>
+            <a href="{% url 'show-team' team.teamid %}">
+                <span class="font-weight-bold">{{team.team_name}}</span>
+            </a>
+            <span class="text-success font-weight-bold"> Manager: {{ team.coach.coach_name}}</span>
+            {% if user.user_profile.user_type == 'organizer' %}
+            <span class="float-right text-info ml-3"><button onclick="location.href='{% url 'edit-team' team_id=team.teamid %}'" class="btn btn-secondary">Edit</button></span>
+            {% endif %}
+            <span class="float-right text-info">&nbsp; Points: {{ team.team_stat.pts }} &nbsp;</span>
+            {% if user.user_profile.user_type == 'organizer' %}
+            <span class="float-right text-info">&nbsp; Status: {{ team.status }}</span>
+            {% endif %}
+        </div>
+        <br/>
+    </div>
+    {% endfor %}
+    </br>
+    {% if user.user_profile.user_type == 'organizer' %}
+    <div class="add-team text-center">
+        <button class="btn btn-primary" onclick="location.href='{% url 'add-team' %}'">Add Team</button>
+    </div>
+    {% endif %}
+</div>
+<script>
+    function teamconfirmDelete(teamId) {
+        if (confirm("Are you confirm to remove this team?")) {
+            location.href = "/teams/team/delete/" + teamId + "/";
+        }
+    }
+</script>
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "pages/league_base.html" %}
+{% load static %}
+{% block title %}League{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {% if user.user_profile.user_type == 'organizer' %}
+        <button>
+        <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+        </button>
+        {% endif %}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">          Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1 </b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+</br></br></br>
+<div class="container-fluid">
+    <div class="row row-cols-sm-1">
+      <div class="col">
+        <a href="{% url 'standing' %}">
+          <div class="hover-image">
+            <img src="{% static 'images/league/Standings.png' %}" alt="Standings" width="500" height="200" class="w-100" />
+            <div class="overlay"></div>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'view-regulation' %}">
+          <div class="hover-image">
+            <img src="{% static 'images/league/Regulation.png' %}" alt="Regulation" width="500" height="200" class="w-100" />
+            <div class="overlay"></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container-fluid">
+    <div class="row row-cols-sm-1">
+      <div class="col">
+        <a href="{% url 'stat_record' %}">
+          <div class="hover-image">
+            <img src="{% static 'images/league/Stats.png' %}" alt="Stats" width="510" height="200" class="w-100" />
+            <div class="overlay"></div>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'report' %}">
+          <div class="hover-image">
+            <img src="{% static 'images/league/Reports.png' %}" alt="Reports" width="500" height="200" class="w-100" />
+            <div class="overlay"></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+    
+       
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}

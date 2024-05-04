@@ -1,0 +1,90 @@
+{% extends "pages/managers_base.html" %}
+{% load static %}
+{% block title %}Managers{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {% if user.user_profile.user_type == 'organizer' %}
+        <button>
+        <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+        </button>
+        {% endif %}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">          Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1</b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+    <div class="container">
+    </br>
+        <div class="input-group">
+            <form method="GET" action="{% url 'search_coach' %}" class="d-flex">
+            <div class="form-outline">
+                {{ form.coach_name }}
+            </div>
+            <button type="submit" class="btn btn-outline-primary">SEARCH</button>
+            </form>
+        </div>
+    </br>
+        <h3 class='display-4' style="position: relative; top: 20px;"> Managers</h3>
+</br>
+        {% for coach in coach_list %}
+        <div class="card">
+            <div class="card-header">
+                <span><img src="{{coach.coach_image.url}}" style="height:50px; width:50px; "></span>
+                <a href="{% url 'show-coach' coach_id=coach.coachid %}">
+                    <span class="font-weight-bold">{{coach.coach_name}}</span>
+                </a>
+                <span class="text-success font-weight-bold"> Team: {{ coach.team.team_name}}</span>
+                {% if user.user_profile.user_type == 'organizer' %}
+                <span class="float-right text-info ml-2"><button onclick="managerconfirmDelete('{{ coach.coachid }}')" class="btn btn-secondary">Remove</button></span>
+                <span class="float-right text-info ml-3"><button onclick="location.href='{% url 'edit-coach' coach_id=coach.coachid %}'" class="btn btn-secondary">Edit</button></span>
+                {% endif %}
+            </div>
+            <br/>
+        </div>
+        {% endfor %}
+    </br>
+        {% if user.user_profile.user_type == 'organizer' %}
+        <div class="add-manager text-center">
+            <button onclick="location.href='{% url 'add-coach' %}'" class="btn btn-primary">Add Manager</button>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function managerconfirmDelete(coachId) {
+            if (confirm("Are you confirm to remove this manager?")) {
+                location.href = "/managers/manager/delete/" + coachId + "/";
+            }
+        }
+    </script>
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "pages/matches_base.html" %}
+{% load static %}
+{% block title %}Matches{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {%if user.user_profile.user_type == 'organizer'%}
+            <button>
+            <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+            </button>
+        {%endif%}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">          Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1</b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+    <div class="content mt-5">
+        {% if submitted %}
+            <div class="alert alert-success">Schedule Was Submitted Successfully!!!</div>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table">
+                    {{ round_name_form.as_table }}
+                </table>
+            </div>
+            {{ formset.management_form }}
+            <div id="formset">
+                {% for form in formset %}
+                <div class="match-form">
+                    <div class="form-border">
+                        {{ form.as_table }}
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Create Schedule</button>
+            </div>
+        </form>
+    </div>
+    
+    
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}
+
+

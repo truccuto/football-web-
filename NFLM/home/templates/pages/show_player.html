@@ -1,0 +1,86 @@
+{% extends "pages/home_base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {% if user.user_profile.user_type == 'organizer' %}
+        <button>
+        <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+        </button>
+        {% endif %}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">          Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1</b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+</br></br>
+    <div class="container">
+        <div class="row">
+            <div class="card col-md-12 p-3 jumbotron">
+                <div class="row ">
+                    <div class="col-md-4">
+                        <img src="{{player.image.url}}" width="380" height="380">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-block">
+                            <h3 class="card-title display-4">{{player.name}}</h3>
+                            <p class="card-text text-justify">
+                                <p><b>DoB</b>: {{player.dob}}</p>
+                                <p><b>Team</b>: {{player.team.team_name}}</p>
+                                <p><b>Height (cm)</b>: {{player.height}}</p>
+                                <p><b>Position</b>: {{player.position}}</p>
+                                <p><b>Nationality</b>: {{player.nationality}}</p>
+                                <p><b>Number of Goals</b>: {{player.player_stat.numberofgoals}}</p>
+                                <p><b>Number of Assists</b>: {{player.player_stat.numberofassists}}</p>
+                            </p>
+                            <a href="https://www.google.com" class="btn btn-primary">read more...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if user.user_profile.user_type == 'organizer' %}
+            <button onclick="location.href='{% url 'edit-player' player.playerid %}'" class="btn btn-primary">Edit</button>
+            <button onclick="playerconfirmDelete('{{ player.playerid }}')" class="btn btn-primary">Remove</button>
+        {% endif %}
+            <button onclick="location.href='/players'" class="btn btn-secondary">Go back</button>
+    </div>
+    <script>
+        function playerconfirmDelete(playerId) {
+            if (confirm("Are you confirm to remove this player?")) {
+                location.href = "/teams/player/delete/" + playerId + "/";
+            }
+        }
+    </script>
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}

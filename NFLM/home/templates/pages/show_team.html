@@ -1,0 +1,148 @@
+{% extends "pages/teams_base.html" %}
+{% load static %}
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="icon_logo">
+        <div class="teams_icon">
+        {% if user.user_profile.user_type == 'organizer' %}
+        <button>
+        <a href="/teams/add_team"><img src="{% static 'images/image_insert.png' %}" class="image_insert"/></a>
+        </button>
+        {% endif %}
+        {% for team in team_list %}
+            <img src="{{ team.team_image.url }}" class="icon"/>
+        {% endfor %}
+        </div>
+        <div class="logo">
+        <div class="user">
+            <b class="username">{{username}}</b>
+            <a href="{% url 'logout' %}" class="logout">          Log Out</a>
+        </div>
+        <b class="logo_name">V.League 1</b>
+        <b class="season">Season 2022 - 2023</b>
+        <img src="{% static 'images/Premiere-League.png' %}" class="league-image"/>
+        </div>
+    </div>
+    <div class="menu">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+        </label>
+        <ul class="nav-items">
+        <li><a href="/">Home</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/teams">Teams</a></li>
+        <li><a href="/players">Players</a></li>
+        <li><a href="/managers">Managers</a></li>
+        <li><a href="/league">League</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h3 class="display-4 font-select">Team</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Country</th>
+                    <th>Stadium</th>
+                    <th>Sponsor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="{{ team.team_image.url }}" height="120px"></td>
+                    <td>{{team.team_name}}</td>
+                    <td>{{team.country}}</td>
+                    <td>{{team.stadium}}</td>
+                    <td></td>
+                </tr>
+                {% for sponsor in team.sponsors.all %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ sponsor.sponsor_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3 class="display-4 font-select">Coach</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Nationality</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+        {% if coach_exists %}
+            <tbody>
+                <tr>
+                    <td>    
+                        <a href="{% url 'show-coach' coach_id=team.coach.coachid %}">
+                            <span class="font-weight-bold">{{team.coach.coach_name}}</span>
+                        </a>
+                    </td>
+                    <td>{{team.coach.nationality}}</td>
+                    {% if user.user_profile.user_type == 'organizer' %}
+                    <td><button onclick="location.href='{% url 'edit-coach' coach_id=team.coach.coachid %}'"class="btn btn-primary">Edit</button></td>
+                    <td><button onclick="managerconfirmDelete('{{ team.coach.coachid }}')"class="btn btn-primary">Remove</button></td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        {% endif %}
+        </table>
+        <h3 class="display-4 font-select">Players</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Nationality</th>
+                    <th>Position</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in team.player_set.all %}
+                <tr>
+                    <td>    
+                        <a href="{% url 'show-player' player_id=player.playerid %}">
+                            <span class="font-weight-bold">{{player.name}}</span>
+                        </a>
+                    </td>
+                    <td>{{player.nationality}}</td>
+                    <td>{{player.position}}</td>
+                    {% if user.user_profile.user_type == 'organizer' %}
+                    <td><button onclick="location.href='{% url 'edit-player' player_id=player.playerid %}'"class="btn btn-primary">Edit</button></td>
+                    <td><button onclick="playerconfirmDelete('{{ player.playerid }}')"class="btn btn-primary">Remove</button></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button onclick="location.href='/teams'"class="btn btn-secondary">Go back</button>
+    </div>
+    <script>
+        function playerconfirmDelete(playerId) {
+            if (confirm("Are you confirm to remove this player?")) {
+                location.href = "/teams/player/delete/" + playerId + "/";
+            }
+        }
+        function managerconfirmDelete(coachId) {
+            if (confirm("Are you confirm to remove this manager?")) {
+                location.href = "/teams/manager/delete/" + coachId + "/";
+            }
+        }
+    </script>
+{% else %} 
+    <script>
+        window.location.replace("/login/");
+    </script>
+{% endif %}
+{% endblock %}

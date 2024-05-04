@@ -1,0 +1,23 @@
+{% extends "pages/create_account_base.html" %}
+{% load static %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <div class = "left">
+      <img src = "{% static 'images/v1_21.png' %}" class="image" alt="Image">
+    </div>
+    <div class = "right">
+    {% if form.errors %}
+    <p>There Was An Error Creating Account, Please Try Again!</p>
+    {% endif %}
+    <form action="{% url 'register_user' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Register" class="btn btn-primary">
+        <div class="Remind">
+            <b>Already have an account?</b>
+            <a href="/login">Log in</a>
+        </div>
+    </form>
+    </div>
+{% endblock %}
